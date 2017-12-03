@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Selector condicionado</title>
+    <link rel="stylesheet" href="select.css">
+</head>
+<body>
+        <div class="control">
+            <select id="Eleccion" class="select "></select>
+        </div>
+        <div class="control">
+            <select id="Variable" class="select "></select>
+        </div>
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script> 
+    <script type="text/javascript">
+        var Variables = {
+            "Eleccion": [{
+                    "nombreEleccion": "Eleccion 1",
+                    "Variable": ["Variable 1-A", "Variable  1-B", "Variable  1-C", "Variable  1-D"]
+            },
+                {
+                    "nombreEleccion": "Eleccion 2",
+                    "Variable": ["Variable 2-A", "Variable  2-B", "Variable  2-C", "Variable  2-D"]
+            },
+                {
+                    "nombreEleccion": "Eleccion  3",
+                    "Variable": ["Variable 3-A", "Variable  3-B", "Variable  3-C", "Variable  3-D"]
+            },
+                {
+                    "nombreEleccion": "Eleccion  4",
+                    "Variable": ["Variable 4-A", "Variable  4-B", "Variable  4-C", "Variable  4-D"]
+            },
+                {
+                    "nombreEleccion": "Eleccion  5",
+                    "Variable": ["Variable 5-A", "Variable  5-B", "Variable  5-C", "Variable  5-D"]
+            }]
+        }
+                
+            jQuery(document).ready(function () {
+
+            var iEleccion = 0;
+            var htmlEleccion = '<option value="sin-eleccion">Seleccione una Opción *</option><option value="sin-eleccion">--</option>';
+            var htmlVariable = '<option value="sin-eleccion">Seleccione una Variable *</option><option value="sin-eleccion">--</option>';
+
+            jQuery.each(Variables.Eleccion, function () {
+                htmlEleccion = htmlEleccion + '<option value="' + Variables.Eleccion[iEleccion].nombreEleccion + '">' + Variables.Eleccion[iEleccion].nombreEleccion + '</option>';
+                iEleccion++;
+            });
+            jQuery('#Eleccion').html(htmlEleccion);
+            jQuery('#Variable').html(htmlVariable);
+
+            jQuery('#Eleccion').change(function () {
+                var iEleccion = 0;
+                var valorEleccion = jQuery(this).val();
+                var htmlVariable = '<option value="sin-variable">Seleccione una Variable</option><option value="sin-variable">--</option>';
+                jQuery.each(Variables.Eleccion, function () {
+                    if (Variables.Eleccion[iEleccion].nombreEleccion == valorEleccion) {
+                        var iVariable = 0;
+                        jQuery.each(Variables.Eleccion[iEleccion].Variable, function () {
+                            htmlVariable = htmlVariable + '<option value="' + Variables.Eleccion[iEleccion].Variable[iVariable] + '">' + Variables.Eleccion[iEleccion].Variable[iVariable] + '</option>';
+                            iVariable++;
+                        });
+                    }
+                    iEleccion++;
+                });
+                jQuery('#Variable').html(htmlVariable);
+            });
+            jQuery('#Variable').change(function () {
+                if (jQuery(this).val() == 'sin-eleccion') {
+                    alert('selecciones una Opcion');
+                } else if (jQuery(this).val() == 'sin-variable') {
+                    alert('selecciones una Variable');
+                }
+            });
+            jQuery('#Eleccion').change(function () {
+                if (jQuery(this).val() == 'sin-eleccion') {
+                    alert('selecciones Eleccion');
+                }
+            });
+        });
+             $('select').each(function(){
+            var $this = $(this), numberOfOptions = $(this).children('option').length;
+          
+            $this.addClass('select-hidden'); 
+            $this.wrap('<div class="select"></div>');
+            $this.after('<div class="select-styled"></div>');
+
+            var $styledSelect = $this.next('div.select-styled');
+            $styledSelect.text($this.children('option').eq(0).text());              
+            var $list = $('<ul />', {
+                'class': 'select-options'
+            }).insertAfter($styledSelect);
+          
+            for (var i = 0; i < numberOfOptions; i++) {
+                $('<li />', {
+                    text: $this.children('option').eq(i).text(),
+                    rel: $this.children('option').eq(i).val()
+                }).appendTo($list);
+            }            
+            var $listItems = $list.children('li');
+          $styledSelect.click(function(e) {
+             if($('.select-options').is(':visible')) {
+                e.stopPropagation();
+                $styledSelect.text($(this).text()).removeClass('active');
+                $this.val($(this).attr('rel'));
+              
+                $list.hide();
+                //console.log($this.val());   
+
+             } else {
+                e.stopPropagation();
+                $('div.select-styled.active').each(function(){
+                    $(this).removeClass('active').next('ul.select-options').hide();
+                });
+                $(this).toggleClass('active').next('ul.select-options').toggle();
+             }//end if
+            });
+          
+            $listItems.click(function(e) {
+                e.stopPropagation();
+                $styledSelect.text($(this).text()).removeClass('active');
+                $this.val($(this).attr('rel'));
+                $list.hide();
+                //console.log($this.val());
+            });
+        
+            $(document).click(function() {
+                $styledSelect.removeClass('active');
+                $list.hide();
+            });
+        });   
+    </script>
+</body>
+</html>
